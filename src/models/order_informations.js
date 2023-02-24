@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class order_informations extends Model {
     /**
@@ -13,24 +11,27 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  order_informations.init({
-    order_id: DataTypes.INTEGER,
-    email: DataTypes.STRING,
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    provinsi: DataTypes.STRING,
-    kabkota: DataTypes.STRING,
-    kecamatan: DataTypes.STRING,
-    kelurahan: DataTypes.STRING,
-    postal_code: DataTypes.STRING,
-    address: DataTypes.TEXT,
-    phone_number: DataTypes.STRING,
-    other_desc: DataTypes.STRING,
-    shipping_method: DataTypes.STRING,
-    payment_method: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'order_informations',
-  });
+  order_informations.init(
+    {
+      order_id: DataTypes.INTEGER,
+      email: DataTypes.STRING,
+      first_name: DataTypes.STRING,
+      last_name: DataTypes.STRING,
+      provinsi: DataTypes.STRING,
+      kabkota: DataTypes.STRING,
+      kecamatan: DataTypes.STRING,
+      kelurahan: DataTypes.STRING,
+      postal_code: DataTypes.STRING,
+      address: DataTypes.TEXT,
+      phone_number: DataTypes.STRING,
+      other_desc: DataTypes.STRING,
+      shipping_method: DataTypes.STRING,
+      payment_method: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: 'order_informations',
+    }
+  );
   return order_informations;
 };

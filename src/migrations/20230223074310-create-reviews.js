@@ -7,7 +7,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       product_id: {
         allowNull: false,
@@ -20,30 +20,30 @@ module.exports = {
       review_name: {
         allowNull: false,
         type: Sequelize.STRING,
-        defaultValue: 'Anonymous'
+        defaultValue: 'Anonymous',
       },
       review_email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       review_stars: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       review_title: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       review_desc: {
         allowNull: false,
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       deletedAt: {
         type: Sequelize.DATE,
@@ -52,5 +52,5 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('reviews');
-  }
+  },
 };

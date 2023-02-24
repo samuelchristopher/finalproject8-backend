@@ -7,7 +7,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       category_id: {
         allowNull: false,
@@ -17,16 +17,20 @@ module.exports = {
           key: 'id',
         },
       },
+      sku: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       name: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       desc: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       price: {
         allowNull: false,
-        type: Sequelize.DECIMAL(19,2)
+        type: Sequelize.DECIMAL(19, 2),
       },
       stock: {
         allowNull: false,
@@ -35,11 +39,11 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       deletedAt: {
         type: Sequelize.DATE,
@@ -48,5 +52,5 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('products');
-  }
+  },
 };
