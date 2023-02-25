@@ -141,7 +141,7 @@ exports.updateCategoryById = async (req, res, next) => {
     });
     // console.log(checkCategoryById);
     if (checkCategoryById !== null) {
-      await categories.update(
+      const updateCategory = await categories.update(
         {
           name: payload.categoryName,
         },
@@ -149,6 +149,19 @@ exports.updateCategoryById = async (req, res, next) => {
           where: { id: req.params.id },
         }
       );
+
+      if (updateCategory[0] === 0) {
+        return res
+          .status(respCode.BAD_REQUEST)
+          .send(
+            respMsg(
+              respCode.BAD_REQUEST,
+              'Update Failed, Please Ensure Payload Valid',
+              null,
+              null
+            )
+          );
+      }
 
       const updateResp = await categories.findOne({
         where: { id: req.params.id },
