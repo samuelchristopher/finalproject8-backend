@@ -19,10 +19,10 @@ app.use(cors({ origin: true, credentials: true }));
 
 sequelize
   .authenticate()
-  .then(function (err) {
+  .then(() => {
     console.log('Database connection has been established successfully.');
   })
-  .catch(function (err) {
+  .catch((err) => {
     console.log('Unable to connect to the database: ', err);
   });
 
