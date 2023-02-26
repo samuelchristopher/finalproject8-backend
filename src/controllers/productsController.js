@@ -1,6 +1,7 @@
 const { products, categories } = require('../models');
 const respMsg = require('../helpers/respMsg');
 const respCode = require('../helpers/respCode');
+const { Op } = require('sequelize');
 
 exports.addProduct = async (req, res, next) => {
   try {
@@ -169,12 +170,16 @@ exports.updateProductById = async (req, res, next) => {
               respMsg(respCode.NOT_FOUND, 'Category ID Not Found', null, null)
             );
         }
-      } else if (payload.sku != null) {
+      }
+
+      if (payload.sku != null) {
         const checkSKU = await products.findOne({
-          where: { sku: payload.sku },
+          where: {
+            [Op.and]: [{ sku: payload.sku }, { id: req.params.id }],
+          },
         });
 
-        if (checkSKU) {
+        if (!checkSKU) {
           return res
             .status(respCode.CONFLICT)
             .send(
