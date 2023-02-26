@@ -18,6 +18,7 @@ module.exports = {
         type: Sequelize.DECIMAL(19, 2),
       },
       status: {
+        allowNull: true,
         type: Sequelize.STRING,
       },
       email: {

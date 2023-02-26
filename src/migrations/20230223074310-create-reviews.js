@@ -18,12 +18,14 @@ module.exports = {
         },
       },
       review_name: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING,
         defaultValue: 'Anonymous',
       },
       review_email: {
+        allowNull: true,
         type: Sequelize.STRING,
+        defaultValue: 'anon@mail.com',
       },
       review_stars: {
         allowNull: false,
@@ -46,6 +48,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       deletedAt: {
+        allowNull: true,
         type: Sequelize.DATE,
       },
     });

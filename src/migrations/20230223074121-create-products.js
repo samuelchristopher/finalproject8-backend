@@ -26,6 +26,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       desc: {
+        allowNull: true,
         type: Sequelize.TEXT,
       },
       price: {
@@ -33,7 +34,7 @@ module.exports = {
         type: Sequelize.DECIMAL(19, 2),
       },
       stock: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
@@ -46,6 +47,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       deletedAt: {
+        allowNull: true,
         type: Sequelize.DATE,
       },
     });
