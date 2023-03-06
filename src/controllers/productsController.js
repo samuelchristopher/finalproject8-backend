@@ -58,7 +58,7 @@ exports.addProduct = async (req, res, next) => {
         sku: payload.sku,
       },
     });
-    console.log(checkProducts);
+    // console.log(checkProducts);
 
     if (checkProducts.rows != 0) {
       return res
