@@ -9,14 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      category_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'categories',
-          key: 'id',
-        },
-      },
       sku: {
         allowNull: false,
         type: Sequelize.STRING,
@@ -51,6 +43,19 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+    await queryInterface.addColumn(
+      'products', // name of source model
+      'category_id', // name of the key we're adding
+      {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        after: 'id', // add column after specific field
+        references: {
+          model: 'categories', // name of target model
+          key: 'id', // key in target model that we're referencing
+        },
+      }
+    );
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('products');

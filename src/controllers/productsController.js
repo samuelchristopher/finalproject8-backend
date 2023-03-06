@@ -20,6 +20,28 @@ exports.addProduct = async (req, res, next) => {
         );
     }
 
+    switch (true) {
+      case payload.categoryID == null:
+      case payload.sku == null:
+      case payload.productName == null:
+      case payload.productDesc == null:
+      case payload.productPrice == null:
+      case payload.productStock == null:
+        return res
+          .status(respCode.BAD_REQUEST)
+          .send(
+            respMsg(
+              respCode.BAD_REQUEST,
+              'Insert Failed, Please Ensure Payload Valid',
+              null,
+              null
+            )
+          );
+
+      default:
+        break;
+    }
+
     const checkCategoryById = await categories.findOne({
       where: { id: payload.categoryID },
     });
@@ -54,11 +76,27 @@ exports.addProduct = async (req, res, next) => {
       price: payload.productPrice,
       stock: payload.productStock,
     });
-    // console.log('id: ' + JSON.stringify(insertCategory));
+    // console.log('insertProduct: ' + JSON.stringify(insertProduct));
+    // console.log('id: ' + insertProduct.id);
+
+    const getInsertedProduct = await products.findOne({
+      include: {
+        model: categories,
+        required: true,
+        attributes: ['id', 'name'],
+      },
+      where: { id: insertProduct.id },
+    });
+
     return res
       .status(respCode.CREATED)
       .send(
-        respMsg(respCode.CREATED, 'New Product Created', null, insertProduct)
+        respMsg(
+          respCode.CREATED,
+          'New Product Created',
+          null,
+          getInsertedProduct
+        )
       );
   } catch (error) {
     console.error(error);
@@ -77,7 +115,14 @@ exports.addProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const getAllData = await products.findAll();
+    const getAllData = await products.findAll({
+      // attributes: ['id', 'sku', 'name', ''],
+      include: {
+        model: categories,
+        required: true,
+        attributes: ['id', 'name'],
+      },
+    });
 
     return res
       .status(respCode.OK)
@@ -102,6 +147,11 @@ exports.getProducts = async (req, res, next) => {
 exports.getProductById = async (req, res, next) => {
   try {
     const data = await products.findOne({
+      include: {
+        model: categories,
+        required: true,
+        attributes: ['id', 'name'],
+      },
       where: { id: req.params.id },
     });
     // console.log(typeof data);
@@ -152,6 +202,28 @@ exports.updateProductById = async (req, res, next) => {
         );
     }
 
+    switch (true) {
+      case payload.categoryID == null:
+      case payload.sku == null:
+      case payload.productName == null:
+      case payload.productDesc == null:
+      case payload.productPrice == null:
+      case payload.productStock == null:
+        return res
+          .status(respCode.BAD_REQUEST)
+          .send(
+            respMsg(
+              respCode.BAD_REQUEST,
+              'Update Failed, Please Ensure Payload Valid',
+              null,
+              null
+            )
+          );
+
+      default:
+        break;
+    }
+
     const checkProductById = await products.findOne({
       where: { id: req.params.id },
     });
@@ -187,6 +259,7 @@ exports.updateProductById = async (req, res, next) => {
             );
         }
       }
+
       await products.update(
         {
           category_id: payload.categoryID,
@@ -202,6 +275,11 @@ exports.updateProductById = async (req, res, next) => {
       );
 
       const updateResp = await products.findOne({
+        include: {
+          model: categories,
+          required: true,
+          attributes: ['id', 'name'],
+        },
         where: { id: req.params.id },
       });
 

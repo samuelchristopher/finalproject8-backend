@@ -9,11 +9,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.product_images, {
+        foreignKey: 'product_id',
+      });
+      this.hasMany(models.reviews, {
+        foreignKey: 'product_id',
+      });
+      this.hasMany(models.order_details, {
+        foreignKey: 'product_id',
+      });
+      this.belongsTo(models.categories, {
+        foreignKey: 'category_id',
+      });
     }
   }
   products.init(
     {
-      category_id: DataTypes.INTEGER,
       sku: DataTypes.STRING,
       name: DataTypes.STRING,
       desc: DataTypes.TEXT,

@@ -20,6 +20,19 @@ exports.addCategory = async (req, res, next) => {
         );
     }
 
+    if (payload.categoryName == null) {
+      return res
+        .status(respCode.BAD_REQUEST)
+        .send(
+          respMsg(
+            respCode.BAD_REQUEST,
+            'Insert Failed, Please Ensure Payload Valid',
+            null,
+            null
+          )
+        );
+    }
+
     const checkCategory = await categories.findAndCountAll({
       where: {
         name: payload.categoryName,
