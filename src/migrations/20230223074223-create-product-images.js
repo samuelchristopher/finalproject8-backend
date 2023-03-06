@@ -9,14 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      product_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'products',
-          key: 'id',
-        },
-      },
       image_path: {
         allowNull: true,
         type: Sequelize.TEXT,
@@ -34,6 +26,19 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+    await queryInterface.addColumn(
+      'product_images', // name of source model
+      'product_id', // name of the key we're adding
+      {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        after: 'id', // add column after specific field
+        references: {
+          model: 'products', // name of target model
+          key: 'id', // key in target model that we're referencing
+        },
+      }
+    );
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('product_images');
