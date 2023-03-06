@@ -1,4 +1,4 @@
-const { reviews, products } = require('../models');
+const { reviews, products, categories } = require('../models');
 const respMsg = require('../helpers/respMsg');
 const respCode = require('../helpers/respCode');
 
@@ -17,6 +17,28 @@ exports.addReview = async (req, res, next) => {
             null
           )
         );
+    }
+
+    switch (true) {
+      case payload.productID == null:
+      case payload.reviewName == null:
+      case payload.reviewEmail == null:
+      case payload.reviewStars == null:
+      case payload.reviewTitle == null:
+      case payload.reviewDesc == null:
+        return res
+          .status(respCode.BAD_REQUEST)
+          .send(
+            respMsg(
+              respCode.BAD_REQUEST,
+              'Insert Failed, Please Ensure Payload Valid',
+              null,
+              null
+            )
+          );
+
+      default:
+        break;
     }
 
     const checkProductById = await products.findOne({
@@ -51,11 +73,35 @@ exports.addReview = async (req, res, next) => {
       review_title: payload.reviewTitle,
       review_desc: payload.reviewDesc,
     });
-    // console.log('id: ' + JSON.stringify(insertCategory));
+    // console.log('insertReview: ' + JSON.stringify(insertReview));
+    // console.log('id: ' + insertReview.id);
+
+    const getInsertedReview = await reviews.findOne({
+      include: {
+        model: products,
+        required: true,
+        attributes: [
+          'id',
+          'category_id',
+          'sku',
+          'name',
+          'desc',
+          'price',
+          'stock',
+        ],
+        include: {
+          model: categories,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+      },
+      where: { id: insertReview.id },
+    });
+
     return res
       .status(respCode.CREATED)
       .send(
-        respMsg(respCode.CREATED, 'New Review Created', null, insertReview)
+        respMsg(respCode.CREATED, 'New Review Created', null, getInsertedReview)
       );
   } catch (error) {
     console.error(error);
@@ -74,7 +120,27 @@ exports.addReview = async (req, res, next) => {
 
 exports.getReviews = async (req, res, next) => {
   try {
-    const getAllData = await reviews.findAll();
+    const getAllData = await reviews.findAll({
+      // attributes: ['id', 'sku', 'name', ''],
+      include: {
+        model: products,
+        required: true,
+        attributes: [
+          'id',
+          'category_id',
+          'sku',
+          'name',
+          'desc',
+          'price',
+          'stock',
+        ],
+        include: {
+          model: categories,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+      },
+    });
 
     return res
       .status(respCode.OK)
@@ -99,6 +165,24 @@ exports.getReviews = async (req, res, next) => {
 exports.getReviewById = async (req, res, next) => {
   try {
     const data = await reviews.findOne({
+      include: {
+        model: products,
+        required: true,
+        attributes: [
+          'id',
+          'category_id',
+          'sku',
+          'name',
+          'desc',
+          'price',
+          'stock',
+        ],
+        include: {
+          model: categories,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+      },
       where: { id: req.params.id },
     });
     // console.log(typeof data);
@@ -149,6 +233,28 @@ exports.updateReviewById = async (req, res, next) => {
         );
     }
 
+    switch (true) {
+      case payload.productID == null:
+      case payload.reviewName == null:
+      case payload.reviewEmail == null:
+      case payload.reviewStars == null:
+      case payload.reviewTitle == null:
+      case payload.reviewDesc == null:
+        return res
+          .status(respCode.BAD_REQUEST)
+          .send(
+            respMsg(
+              respCode.BAD_REQUEST,
+              'Update Failed, Please Ensure Payload Valid',
+              null,
+              null
+            )
+          );
+
+      default:
+        break;
+    }
+
     const checkReviewById = await reviews.findOne({
       where: { id: req.params.id },
     });
@@ -197,6 +303,24 @@ exports.updateReviewById = async (req, res, next) => {
       );
 
       const updateResp = await reviews.findOne({
+        include: {
+          model: products,
+          required: true,
+          attributes: [
+            'id',
+            'category_id',
+            'sku',
+            'name',
+            'desc',
+            'price',
+            'stock',
+          ],
+          include: {
+            model: categories,
+            required: true,
+            attributes: ['id', 'name'],
+          },
+        },
         where: { id: req.params.id },
       });
 
