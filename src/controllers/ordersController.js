@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { orders, order_details, products, sequelize } = require('../models');
 const respMsg = require('../helpers/respMsg');
 const respCode = require('../helpers/respCode');
@@ -141,104 +142,93 @@ exports.addOrder = async (req, res, next) => {
   }
 };
 
-// exports.getReviews = async (req, res, next) => {
-//   try {
-//     const getAllData = await reviews.findAll({
-//       // attributes: ['id', 'sku', 'name', ''],
-//       include: {
-//         model: products,
-//         required: true,
-//         attributes: [
-//           'id',
-//           'category_id',
-//           'sku',
-//           'name',
-//           'desc',
-//           'price',
-//           'stock',
-//         ],
-//         include: {
-//           model: categories,
-//           required: true,
-//           attributes: ['id', 'name'],
-//         },
-//       },
-//     });
+exports.getOrders = async (req, res, next) => {
+  try {
+    const getAllData = await orders.findAll({
+      // attributes: ['id', 'sku', 'name', ''],
+      include: {
+        model: order_details,
+        required: true,
+        attributes: ['id', 'order_id', 'product_id', 'qty', 'price'],
+        include: {
+          model: products,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+      },
+    });
 
-//     return res
-//       .status(respCode.OK)
-//       .send(
-//         respMsg(respCode.OK, 'Retrieve All Data Successfully', null, getAllData)
-//       );
-//   } catch (error) {
-//     console.error(error);
-//     return res
-//       .status(respCode.SERVER_ERROR)
-//       .send(
-//         respMsg(
-//           respCode.SERVER_ERROR,
-//           'Oops, Something Wrong Happened',
-//           error,
-//           null
-//         )
-//       );
-//   }
-// };
+    return res
+      .status(respCode.OK)
+      .send(
+        respMsg(respCode.OK, 'Retrieve All Data Successfully', null, getAllData)
+      );
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(respCode.SERVER_ERROR)
+      .send(
+        respMsg(
+          respCode.SERVER_ERROR,
+          'Oops, Something Wrong Happened',
+          error,
+          null
+        )
+      );
+  }
+};
 
-// exports.getReviewById = async (req, res, next) => {
-//   try {
-//     const data = await reviews.findOne({
-//       include: {
-//         model: products,
-//         required: true,
-//         attributes: [
-//           'id',
-//           'category_id',
-//           'sku',
-//           'name',
-//           'desc',
-//           'price',
-//           'stock',
-//         ],
-//         include: {
-//           model: categories,
-//           required: true,
-//           attributes: ['id', 'name'],
-//         },
-//       },
-//       where: { id: req.params.id },
-//     });
-//     // console.log(typeof data);
-//     if (data !== null) {
-//       return res
-//         .status(respCode.OK)
-//         .send(
-//           respMsg(
-//             respCode.OK,
-//             'Retrieve Data by ID Successfully',
-//             null,
-//             data.dataValues
-//           )
-//         );
-//     }
+exports.getOrderByIdOrCode = async (req, res, next) => {
+  try {
+    const data = await orders.findOne({
+      include: {
+        model: order_details,
+        // required: true,
+        attributes: ['id', 'order_id', 'product_id', 'qty', 'price'],
+        include: {
+          model: products,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+      },
+      where: {
+        [Op.or]: [
+          { id: req.params.idOrCode },
+          { order_code: req.params.idOrCode },
+        ],
+      },
+    });
+    // console.log(typeof data);
+    if (data !== null) {
+      return res
+        .status(respCode.OK)
+        .send(
+          respMsg(
+            respCode.OK,
+            'Retrieve Data by ID Successfully',
+            null,
+            data.dataValues
+          )
+        );
+    }
 
-//     return res
-//       .status(respCode.NOT_FOUND)
-//       .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
-//   } catch (error) {
-//     console.error(error);
-//     return res
-//       .status(respCode.SERVER_ERROR)
-//       .send(
-//         respMsg(
-//           respCode.SERVER_ERROR,
-//           'Oops, Something Wrong Happened',
-//           error,
-//           null
-//         )
-//       );
-//   }
-// };
+    return res
+      .status(respCode.NOT_FOUND)
+      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(respCode.SERVER_ERROR)
+      .send(
+        respMsg(
+          respCode.SERVER_ERROR,
+          'Oops, Something Wrong Happened',
+          error,
+          null
+        )
+      );
+  }
+};
 
 // exports.updateReviewById = async (req, res, next) => {
 //   try {
