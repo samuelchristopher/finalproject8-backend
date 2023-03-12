@@ -1,9 +1,10 @@
-const { orders, orderDetails, products } = require('../models');
+const { orders, order_details, products, sequelize } = require('../models');
 const respMsg = require('../helpers/respMsg');
 const respCode = require('../helpers/respCode');
 const orderCode = require('../helpers/orderCodeBuilder');
 
 exports.addOrder = async (req, res, next) => {
+  let transaction;
   try {
     const payload = req.body;
     // console.log('object: >>', payload);
@@ -20,35 +21,33 @@ exports.addOrder = async (req, res, next) => {
         );
     }
 
-    // switch (true) {
-    //   case payload.orderTotalPrice == null:
-    //   case payload.orderEmail == null:
-    //   case payload.orderFirstName == null:
-    //   case payload.orderProvinsi == null:
-    //   case payload.orderKabkota == null:
-    //   case payload.orderKecamatan == null:
-    //   case payload.orderKelurahan == null:
-    //   case payload.orderAddress == null:
-    //   case payload.orderPhoneNumber == null:
-    //   case payload.orderShippingMethod == null:
-    //   case payload.orderPaymentMethod == null:
-    //   case payload.orderDetailProductID == null:
-    //   case payload.orderDetailQty == null:
-    //   case payload.orderDetailPrice == null:
-    //     return res
-    //       .status(respCode.BAD_REQUEST)
-    //       .send(
-    //         respMsg(
-    //           respCode.BAD_REQUEST,
-    //           'Insert Failed, Please Ensure Payload Valid',
-    //           null,
-    //           null
-    //         )
-    //       );
+    switch (true) {
+      case payload.orderTotalPrice == null:
+      case payload.orderEmail == null:
+      case payload.orderFirstName == null:
+      case payload.orderProvinsi == null:
+      case payload.orderKabkota == null:
+      case payload.orderKecamatan == null:
+      case payload.orderKelurahan == null:
+      case payload.orderAddress == null:
+      case payload.orderPhoneNumber == null:
+      case payload.orderShippingMethod == null:
+      case payload.orderPaymentMethod == null:
+      case payload.orderDetails == null:
+        return res
+          .status(respCode.BAD_REQUEST)
+          .send(
+            respMsg(
+              respCode.BAD_REQUEST,
+              'Insert Failed, Please Ensure Payload Valid',
+              null,
+              null
+            )
+          );
 
-    //   default:
-    //     break;
-    // }
+      default:
+        break;
+    }
 
     // const checkProductById = await products.findOne({
     //   where: { id: payload.orderDetailProductID },
@@ -61,55 +60,74 @@ exports.addOrder = async (req, res, next) => {
     //     .send(respMsg(respCode.NOT_FOUND, 'Product ID Not Found', null, null));
     // }
 
-    const insertOrder = await orders.create({
-      order_code: orderCode,
-      total_price: payload.orderTotalPrice,
-      status: 'CREATED',
-      email: payload.orderEmail,
-      first_name: payload.orderFirstName,
-      last_name: payload.orderLastName,
-      provinsi: payload.orderProvinsi,
-      kabkota: payload.orderKabkota,
-      kecamatan: payload.orderKecamatan,
-      kelurahan: payload.orderKelurahan,
-      postal_code: payload.orderPostalCode,
-      address: payload.orderAddress,
-      phone_number: payload.orderPhoneNumber,
-      other_desc: payload.orderOtherDesc,
-      shipping_method: payload.orderShippingMethod,
-      payment_method: payload.orderPaymentMethod,
+    transaction = await sequelize.transaction();
+
+    const insertOrder = await orders.create(
+      {
+        order_code: orderCode,
+        total_price: payload.orderTotalPrice,
+        status: 'CREATED',
+        email: payload.orderEmail,
+        first_name: payload.orderFirstName,
+        last_name: payload.orderLastName,
+        provinsi: payload.orderProvinsi,
+        kabkota: payload.orderKabkota,
+        kecamatan: payload.orderKecamatan,
+        kelurahan: payload.orderKelurahan,
+        postal_code: payload.orderPostalCode,
+        address: payload.orderAddress,
+        phone_number: payload.orderPhoneNumber,
+        other_desc: payload.orderOtherDesc,
+        shipping_method: payload.orderShippingMethod,
+        payment_method: payload.orderPaymentMethod,
+      },
+      { transaction }
+    );
+
+    const dataOrderDetails = [];
+
+    payload.orderDetails.forEach((details) => {
+      const data = {
+        order_id: insertOrder.id,
+        product_id: details.productID,
+        qty: details.qty,
+        price: details.price,
+      };
+
+      dataOrderDetails.push(data);
     });
+
+    await order_details.bulkCreate(dataOrderDetails, { transaction });
+
+    await transaction.commit();
 
     // console.log('insertReview: ' + JSON.stringify(insertReview));
     // console.log('id: ' + insertReview.id);
 
-    // const getInsertedReview = await orders.findOne({
-    //   include: {
-    //     model: products,
-    //     required: true,
-    //     attributes: [
-    //       'id',
-    //       'category_id',
-    //       'sku',
-    //       'name',
-    //       'desc',
-    //       'price',
-    //       'stock',
-    //     ],
-    //     include: {
-    //       model: categories,
-    //       required: true,
-    //       attributes: ['id', 'name'],
-    //     },
-    //   },
-    //   where: { id: insertReview.id },
-    // });
+    const getInsertedOrder = await orders.findOne({
+      include: {
+        model: order_details,
+        required: true,
+        attributes: ['id', 'order_id', 'product_id', 'qty', 'price'],
+        include: {
+          model: products,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+      },
+      where: { id: insertOrder.id },
+    });
 
     return res
       .status(respCode.CREATED)
-      .send(respMsg(respCode.CREATED, 'New Order Created', null, insertOrder));
+      .send(
+        respMsg(respCode.CREATED, 'New Order Created', null, getInsertedOrder)
+      );
   } catch (error) {
     console.error(error);
+    if (transaction) {
+      await transaction.rollback();
+    }
     return res
       .status(respCode.SERVER_ERROR)
       .send(
