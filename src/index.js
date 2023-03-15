@@ -8,7 +8,7 @@ const categoriesRouter = require('./routes/categoriesRouter');
 const productsRouter = require('./routes/productsRouter');
 // const productImgRouter = require('./routes/productImgRouter');
 const reviewsRouter = require('./routes/reviewsRouter');
-// const ordersRouter = require('./routes/ordersRouter');
+const ordersRouter = require('./routes/ordersRouter');
 
 const app = express();
 
@@ -31,7 +31,7 @@ app.use('/categories', categoriesRouter);
 app.use('/products', productsRouter);
 // app.use('/product-images', productImgRouter);
 app.use('/reviews', reviewsRouter);
-// app.use('/orders', ordersRouter);
+app.use('/orders', ordersRouter);
 
 app.listen(process.env.SERVER_PORT, () => {
   console.log(`Server Running on port: ${process.env.SERVER_PORT}`);
