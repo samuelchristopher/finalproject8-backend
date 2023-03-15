@@ -52,10 +52,20 @@ exports.addCategory = async (req, res, next) => {
 
     // console.log('id: ' + JSON.stringify(insertCategory));
 
+    const getInsertedCategory = await categories.findOne({
+      attributes: ['id', 'name'],
+      where: { id: insertCategory.id },
+    });
+
     return res
       .status(respCode.CREATED)
       .send(
-        respMsg(respCode.CREATED, 'New Category Created', null, insertCategory)
+        respMsg(
+          respCode.CREATED,
+          'New Category Created',
+          null,
+          getInsertedCategory
+        )
       );
   } catch (error) {
     console.error(error);
@@ -74,7 +84,9 @@ exports.addCategory = async (req, res, next) => {
 
 exports.getCategories = async (req, res, next) => {
   try {
-    const getAllData = await categories.findAll();
+    const getAllData = await categories.findAll({
+      attributes: ['id', 'name'],
+    });
 
     return res
       .status(respCode.OK)
@@ -99,6 +111,7 @@ exports.getCategories = async (req, res, next) => {
 exports.getCategoryById = async (req, res, next) => {
   try {
     const data = await categories.findOne({
+      attributes: ['id', 'name'],
       where: { id: req.params.id },
     });
     // console.log(typeof data);
@@ -177,6 +190,7 @@ exports.updateCategoryById = async (req, res, next) => {
       }
 
       const updateResp = await categories.findOne({
+        attributes: ['id', 'name'],
         where: { id: req.params.id },
       });
 
