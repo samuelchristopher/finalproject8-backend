@@ -128,7 +128,7 @@ exports.addOrder = async (req, res, next) => {
       include: {
         model: order_details,
         required: true,
-        attributes: ['id', 'order_id', 'product_id', 'qty', 'price'],
+        attributes: ['id', 'qty', 'price'],
         include: {
           model: products,
           required: true,
@@ -186,7 +186,7 @@ exports.getOrders = async (req, res, next) => {
       include: {
         model: order_details,
         required: true,
-        attributes: ['id', 'order_id', 'product_id', 'qty', 'price'],
+        attributes: ['id', 'qty', 'price'],
         include: {
           model: products,
           required: true,
@@ -240,7 +240,7 @@ exports.getOrderByIdOrCode = async (req, res, next) => {
       include: {
         model: order_details,
         required: true,
-        attributes: ['id', 'order_id', 'product_id', 'qty', 'price'],
+        attributes: ['id', 'qty', 'price'],
         include: {
           model: products,
           // required: true,
@@ -349,7 +349,7 @@ exports.updateOrderStatusByIdOrCode = async (req, res, next) => {
         include: {
           model: order_details,
           required: true,
-          attributes: ['id', 'order_id', 'product_id', 'qty', 'price'],
+          attributes: ['id', 'qty', 'price'],
           include: {
             model: products,
             // required: true,
