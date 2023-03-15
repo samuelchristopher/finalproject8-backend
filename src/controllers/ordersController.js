@@ -106,6 +106,25 @@ exports.addOrder = async (req, res, next) => {
     // console.log('id: ' + insertReview.id);
 
     const getInsertedOrder = await orders.findOne({
+      attributes: [
+        'id',
+        'order_code',
+        'total_price',
+        'status',
+        'email',
+        'first_name',
+        'last_name',
+        'provinsi',
+        'kabkota',
+        'kecamatan',
+        'kelurahan',
+        'postal_code',
+        'address',
+        'phone_number',
+        'other_desc',
+        'shipping_method',
+        'payment_method',
+      ],
       include: {
         model: order_details,
         required: true,
@@ -145,7 +164,25 @@ exports.addOrder = async (req, res, next) => {
 exports.getOrders = async (req, res, next) => {
   try {
     const getAllData = await orders.findAll({
-      // attributes: ['id', 'sku', 'name', ''],
+      attributes: [
+        'id',
+        'order_code',
+        'total_price',
+        'status',
+        'email',
+        'first_name',
+        'last_name',
+        'provinsi',
+        'kabkota',
+        'kecamatan',
+        'kelurahan',
+        'postal_code',
+        'address',
+        'phone_number',
+        'other_desc',
+        'shipping_method',
+        'payment_method',
+      ],
       include: {
         model: order_details,
         required: true,
@@ -181,6 +218,25 @@ exports.getOrders = async (req, res, next) => {
 exports.getOrderByIdOrCode = async (req, res, next) => {
   try {
     const data = await orders.findOne({
+      attributes: [
+        'id',
+        'order_code',
+        'total_price',
+        'status',
+        'email',
+        'first_name',
+        'last_name',
+        'provinsi',
+        'kabkota',
+        'kecamatan',
+        'kelurahan',
+        'postal_code',
+        'address',
+        'phone_number',
+        'other_desc',
+        'shipping_method',
+        'payment_method',
+      ],
       include: {
         model: order_details,
         required: true,
@@ -271,6 +327,25 @@ exports.updateOrderStatusByIdOrCode = async (req, res, next) => {
       );
 
       const updateResp = await orders.findOne({
+        attributes: [
+          'id',
+          'order_code',
+          'total_price',
+          'status',
+          'email',
+          'first_name',
+          'last_name',
+          'provinsi',
+          'kabkota',
+          'kecamatan',
+          'kelurahan',
+          'postal_code',
+          'address',
+          'phone_number',
+          'other_desc',
+          'shipping_method',
+          'payment_method',
+        ],
         include: {
           model: order_details,
           required: true,

@@ -77,18 +77,18 @@ exports.addReview = async (req, res, next) => {
     // console.log('id: ' + insertReview.id);
 
     const getInsertedReview = await reviews.findOne({
+      attributes: [
+        'id',
+        'review_name',
+        'review_email',
+        'review_stars',
+        'review_title',
+        'review_desc',
+      ],
       include: {
         model: products,
         required: true,
-        attributes: [
-          'id',
-          'category_id',
-          'sku',
-          'name',
-          'desc',
-          'price',
-          'stock',
-        ],
+        attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
         include: {
           model: categories,
           required: true,
@@ -121,19 +121,18 @@ exports.addReview = async (req, res, next) => {
 exports.getReviews = async (req, res, next) => {
   try {
     const getAllData = await reviews.findAll({
-      // attributes: ['id', 'sku', 'name', ''],
+      attributes: [
+        'id',
+        'review_name',
+        'review_email',
+        'review_stars',
+        'review_title',
+        'review_desc',
+      ],
       include: {
         model: products,
         required: true,
-        attributes: [
-          'id',
-          'category_id',
-          'sku',
-          'name',
-          'desc',
-          'price',
-          'stock',
-        ],
+        attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
         include: {
           model: categories,
           required: true,
@@ -165,18 +164,18 @@ exports.getReviews = async (req, res, next) => {
 exports.getReviewById = async (req, res, next) => {
   try {
     const data = await reviews.findOne({
+      attributes: [
+        'id',
+        'review_name',
+        'review_email',
+        'review_stars',
+        'review_title',
+        'review_desc',
+      ],
       include: {
         model: products,
         required: true,
-        attributes: [
-          'id',
-          'category_id',
-          'sku',
-          'name',
-          'desc',
-          'price',
-          'stock',
-        ],
+        attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
         include: {
           model: categories,
           required: true,
@@ -303,18 +302,18 @@ exports.updateReviewById = async (req, res, next) => {
       );
 
       const updateResp = await reviews.findOne({
+        attributes: [
+          'id',
+          'review_name',
+          'review_email',
+          'review_stars',
+          'review_title',
+          'review_desc',
+        ],
         include: {
           model: products,
           required: true,
-          attributes: [
-            'id',
-            'category_id',
-            'sku',
-            'name',
-            'desc',
-            'price',
-            'stock',
-          ],
+          attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
           include: {
             model: categories,
             required: true,

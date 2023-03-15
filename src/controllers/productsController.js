@@ -1,7 +1,7 @@
+const { Op } = require('sequelize');
 const { products, categories } = require('../models');
 const respMsg = require('../helpers/respMsg');
 const respCode = require('../helpers/respCode');
-const { Op } = require('sequelize');
 
 exports.addProduct = async (req, res, next) => {
   try {
@@ -80,6 +80,7 @@ exports.addProduct = async (req, res, next) => {
     // console.log('id: ' + insertProduct.id);
 
     const getInsertedProduct = await products.findOne({
+      attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
       include: {
         model: categories,
         required: true,
@@ -116,7 +117,7 @@ exports.addProduct = async (req, res, next) => {
 exports.getProducts = async (req, res, next) => {
   try {
     const getAllData = await products.findAll({
-      // attributes: ['id', 'sku', 'name', ''],
+      attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
       include: {
         model: categories,
         required: true,
@@ -147,6 +148,7 @@ exports.getProducts = async (req, res, next) => {
 exports.getProductById = async (req, res, next) => {
   try {
     const data = await products.findOne({
+      attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
       include: {
         model: categories,
         required: true,
@@ -275,6 +277,7 @@ exports.updateProductById = async (req, res, next) => {
       );
 
       const updateResp = await products.findOne({
+        attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
         include: {
           model: categories,
           required: true,
