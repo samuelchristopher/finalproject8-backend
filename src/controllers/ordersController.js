@@ -61,11 +61,15 @@ exports.addOrder = async (req, res, next) => {
     //     .send(respMsg(respCode.NOT_FOUND, 'Product ID Not Found', null, null));
     // }
 
+    const rndInt = Math.floor(Math.random() * (9999 - 1 + 1)) + 1;
+    const leadZeroRndInt = `0000${rndInt}`.slice(-4);
+    const dateNow = Date.now();
+
     transaction = await sequelize.transaction();
 
     const insertOrder = await orders.create(
       {
-        order_code: orderCode,
+        order_code: orderCode.toString().concat(dateNow, leadZeroRndInt),
         total_price: payload.orderTotalPrice,
         status: 'CREATED',
         email: payload.orderEmail,
