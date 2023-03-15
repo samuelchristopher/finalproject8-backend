@@ -183,11 +183,11 @@ exports.getOrderByIdOrCode = async (req, res, next) => {
     const data = await orders.findOne({
       include: {
         model: order_details,
-        // required: true,
+        required: true,
         attributes: ['id', 'order_id', 'product_id', 'qty', 'price'],
         include: {
           model: products,
-          required: true,
+          // required: true,
           attributes: ['id', 'name'],
         },
       },
@@ -230,138 +230,90 @@ exports.getOrderByIdOrCode = async (req, res, next) => {
   }
 };
 
-// exports.updateReviewById = async (req, res, next) => {
-//   try {
-//     const payload = req.body;
-//     if (Object.keys(payload).length === 0) {
-//       return res
-//         .status(respCode.BAD_REQUEST)
-//         .send(
-//           respMsg(
-//             respCode.BAD_REQUEST,
-//             'Body is Required, Cannot be Empty',
-//             null,
-//             null
-//           )
-//         );
-//     }
+exports.updateOrderStatusByIdOrCode = async (req, res, next) => {
+  try {
+    const payload = req.body;
+    if (Object.keys(payload).length === 0) {
+      return res
+        .status(respCode.BAD_REQUEST)
+        .send(
+          respMsg(
+            respCode.BAD_REQUEST,
+            'Body is Required, Cannot be Empty',
+            null,
+            null
+          )
+        );
+    }
 
-//     switch (true) {
-//       case payload.productID == null:
-//       case payload.reviewName == null:
-//       case payload.reviewEmail == null:
-//       case payload.reviewStars == null:
-//       case payload.reviewTitle == null:
-//       case payload.reviewDesc == null:
-//         return res
-//           .status(respCode.BAD_REQUEST)
-//           .send(
-//             respMsg(
-//               respCode.BAD_REQUEST,
-//               'Update Failed, Please Ensure Payload Valid',
-//               null,
-//               null
-//             )
-//           );
+    const checkOrderByIdOrCode = await orders.findOne({
+      where: {
+        [Op.or]: [
+          { id: req.params.idOrCode },
+          { order_code: req.params.idOrCode },
+        ],
+      },
+    });
 
-//       default:
-//         break;
-//     }
+    if (checkOrderByIdOrCode !== null) {
+      await orders.update(
+        {
+          status: payload.orderStatus,
+        },
+        {
+          where: {
+            [Op.or]: [
+              { id: req.params.idOrCode },
+              { order_code: req.params.idOrCode },
+            ],
+          },
+        }
+      );
 
-//     const checkReviewById = await reviews.findOne({
-//       where: { id: req.params.id },
-//     });
-//     // console.log(checkReviewById);
-//     if (checkReviewById !== null) {
-//       if (payload.productID != null) {
-//         const checkProductById = await products.findOne({
-//           where: { id: payload.productID },
-//         });
-//         // console.log(checkProductById);
+      const updateResp = await orders.findOne({
+        include: {
+          model: order_details,
+          required: true,
+          attributes: ['id', 'order_id', 'product_id', 'qty', 'price'],
+          include: {
+            model: products,
+            // required: true,
+            attributes: ['id', 'name'],
+          },
+        },
+        where: {
+          [Op.or]: [
+            { id: req.params.idOrCode },
+            { order_code: req.params.idOrCode },
+          ],
+        },
+      });
 
-//         if (!checkProductById) {
-//           return res
-//             .status(respCode.NOT_FOUND)
-//             .send(
-//               respMsg(respCode.NOT_FOUND, 'Product ID Not Found', null, null)
-//             );
-//         }
-//       }
-
-//       if (payload.reviewStars < 1 || payload.reviewStars > 5) {
-//         return res
-//           .status(respCode.BAD_REQUEST)
-//           .send(
-//             respMsg(
-//               respCode.BAD_REQUEST,
-//               'Minimum Review Stars is 1, Maximum Review Stars is 5',
-//               null,
-//               null
-//             )
-//           );
-//       }
-
-//       await reviews.update(
-//         {
-//           product_id: payload.productID,
-//           review_name: payload.reviewName,
-//           review_email: payload.reviewEmail,
-//           review_stars: payload.reviewStars,
-//           review_title: payload.reviewTitle,
-//           review_desc: payload.reviewDesc,
-//         },
-//         {
-//           where: { id: req.params.id },
-//         }
-//       );
-
-//       const updateResp = await reviews.findOne({
-//         include: {
-//           model: products,
-//           required: true,
-//           attributes: [
-//             'id',
-//             'category_id',
-//             'sku',
-//             'name',
-//             'desc',
-//             'price',
-//             'stock',
-//           ],
-//           include: {
-//             model: categories,
-//             required: true,
-//             attributes: ['id', 'name'],
-//           },
-//         },
-//         where: { id: req.params.id },
-//       });
-
-//       return res
-//         .status(respCode.OK)
-//         .send(
-//           respMsg(
-//             respCode.OK,
-//             'Update data by ID successfully',
-//             null,
-//             updateResp
-//           )
-//         );
-//     }
-//     return res
-//       .status(respCode.NOT_FOUND)
-//       .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
-//   } catch (error) {
-//     console.error(error);
-//     return res
-//       .status(respCode.SERVER_ERROR)
-//       .send(
-//         respMsg(
-//           respCode.SERVER_ERROR,
-//           'Oops, Something Wrong Happened',
-//           error,
-//           null
-//         )
-//       );
-//   }
-// };
+      return res
+        .status(respCode.OK)
+        .send(
+          respMsg(
+            respCode.OK,
+            'Update data by ID or Code successfully',
+            null,
+            updateResp
+          )
+        );
+    }
+    return res
+      .status(respCode.NOT_FOUND)
+      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(respCode.SERVER_ERROR)
+      .send(
+        respMsg(
+          respCode.SERVER_ERROR,
+          'Oops, Something Wrong Happened',
+          error,
+          null
+        )
+      );
+  }
+};

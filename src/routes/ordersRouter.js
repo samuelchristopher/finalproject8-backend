@@ -6,6 +6,6 @@ const router = express.Router();
 router.post('/', ordersController.addOrder);
 router.get('/', ordersController.getOrders);
 router.get('/:idOrCode', ordersController.getOrderByIdOrCode);
-// router.get('/:idOrCode', ordersController.updateOrderByIdOrCode);
+router.put('/:idOrCode', ordersController.updateOrderStatusByIdOrCode);
 
 module.exports = router;
