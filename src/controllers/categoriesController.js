@@ -12,6 +12,7 @@ exports.addCategory = async (req, res, next) => {
         .status(respCode.BAD_REQUEST)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.BAD_REQUEST,
             'Body is Required, Cannot be Empty',
             null,
@@ -25,6 +26,7 @@ exports.addCategory = async (req, res, next) => {
         .status(respCode.BAD_REQUEST)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.BAD_REQUEST,
             'Insert Failed, Please Ensure Payload Valid',
             null,
@@ -43,7 +45,15 @@ exports.addCategory = async (req, res, next) => {
     if (checkCategory.rows != 0) {
       return res
         .status(respCode.CONFLICT)
-        .send(respMsg(respCode.CONFLICT, 'Category Already Exist', null, null));
+        .send(
+          respMsg(
+            req.baseUrl,
+            respCode.CONFLICT,
+            'Category Already Exist',
+            null,
+            null
+          )
+        );
     }
 
     const insertCategory = await categories.create({
@@ -61,6 +71,7 @@ exports.addCategory = async (req, res, next) => {
       .status(respCode.CREATED)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.CREATED,
           'New Category Created',
           null,
@@ -73,6 +84,7 @@ exports.addCategory = async (req, res, next) => {
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -91,7 +103,13 @@ exports.getCategories = async (req, res, next) => {
     return res
       .status(respCode.OK)
       .send(
-        respMsg(respCode.OK, 'Retrieve All Data Successfully', null, getAllData)
+        respMsg(
+          req.baseUrl,
+          respCode.OK,
+          'Retrieve All Data Successfully',
+          null,
+          getAllData
+        )
       );
   } catch (error) {
     console.error(error);
@@ -99,6 +117,7 @@ exports.getCategories = async (req, res, next) => {
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -120,6 +139,7 @@ exports.getCategoryById = async (req, res, next) => {
         .status(respCode.OK)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.OK,
             'Retrieve Data by ID Successfully',
             null,
@@ -130,13 +150,16 @@ exports.getCategoryById = async (req, res, next) => {
 
     return res
       .status(respCode.NOT_FOUND)
-      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+      .send(
+        respMsg(req.baseUrl, respCode.NOT_FOUND, 'ID Not Found', null, null)
+      );
   } catch (error) {
     console.error(error);
     return res
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -154,6 +177,7 @@ exports.updateCategoryById = async (req, res, next) => {
         .status(respCode.BAD_REQUEST)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.BAD_REQUEST,
             'Body is Required, Cannot be Empty',
             null,
@@ -181,6 +205,7 @@ exports.updateCategoryById = async (req, res, next) => {
           .status(respCode.BAD_REQUEST)
           .send(
             respMsg(
+              req.baseUrl,
               respCode.BAD_REQUEST,
               'Update Failed, Please Ensure Payload Valid',
               null,
@@ -198,6 +223,7 @@ exports.updateCategoryById = async (req, res, next) => {
         .status(respCode.OK)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.OK,
             'Update data by ID successfully',
             null,
@@ -207,13 +233,16 @@ exports.updateCategoryById = async (req, res, next) => {
     }
     return res
       .status(respCode.NOT_FOUND)
-      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+      .send(
+        respMsg(req.baseUrl, respCode.NOT_FOUND, 'ID Not Found', null, null)
+      );
   } catch (error) {
     console.error(error);
     return res
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -239,6 +268,7 @@ exports.deleteCategoryById = async (req, res, next) => {
           .status(respCode.BAD_REQUEST)
           .send(
             respMsg(
+              req.baseUrl,
               respCode.BAD_REQUEST,
               'Cannot Delete Category, Product(s) Still Active',
               null,
@@ -253,18 +283,27 @@ exports.deleteCategoryById = async (req, res, next) => {
       return res
         .status(respCode.OK)
         .send(
-          respMsg(respCode.OK, 'Delete data by ID successfully', null, null)
+          respMsg(
+            req.baseUrl,
+            respCode.OK,
+            'Delete data by ID successfully',
+            null,
+            null
+          )
         );
     }
     return res
       .status(respCode.NOT_FOUND)
-      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+      .send(
+        respMsg(req.baseUrl, respCode.NOT_FOUND, 'ID Not Found', null, null)
+      );
   } catch (error) {
     console.error(error);
     return res
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,

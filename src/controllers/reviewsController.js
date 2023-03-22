@@ -11,6 +11,7 @@ exports.addReview = async (req, res, next) => {
         .status(respCode.BAD_REQUEST)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.BAD_REQUEST,
             'Body is Required, Cannot be Empty',
             null,
@@ -30,6 +31,7 @@ exports.addReview = async (req, res, next) => {
           .status(respCode.BAD_REQUEST)
           .send(
             respMsg(
+              req.baseUrl,
               respCode.BAD_REQUEST,
               'Insert Failed, Please Ensure Payload Valid',
               null,
@@ -49,7 +51,15 @@ exports.addReview = async (req, res, next) => {
     if (!checkProductById) {
       return res
         .status(respCode.NOT_FOUND)
-        .send(respMsg(respCode.NOT_FOUND, 'Product ID Not Found', null, null));
+        .send(
+          respMsg(
+            req.baseUrl,
+            respCode.NOT_FOUND,
+            'Product ID Not Found',
+            null,
+            null
+          )
+        );
     }
 
     if (payload.reviewStars < 1 || payload.reviewStars > 5) {
@@ -57,6 +67,7 @@ exports.addReview = async (req, res, next) => {
         .status(respCode.BAD_REQUEST)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.BAD_REQUEST,
             'Minimum Review Stars is 1, Maximum Review Stars is 5',
             null,
@@ -101,7 +112,13 @@ exports.addReview = async (req, res, next) => {
     return res
       .status(respCode.CREATED)
       .send(
-        respMsg(respCode.CREATED, 'New Review Created', null, getInsertedReview)
+        respMsg(
+          req.baseUrl,
+          respCode.CREATED,
+          'New Review Created',
+          null,
+          getInsertedReview
+        )
       );
   } catch (error) {
     console.error(error);
@@ -109,6 +126,7 @@ exports.addReview = async (req, res, next) => {
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -144,7 +162,13 @@ exports.getReviews = async (req, res, next) => {
     return res
       .status(respCode.OK)
       .send(
-        respMsg(respCode.OK, 'Retrieve All Data Successfully', null, getAllData)
+        respMsg(
+          req.baseUrl,
+          respCode.OK,
+          'Retrieve All Data Successfully',
+          null,
+          getAllData
+        )
       );
   } catch (error) {
     console.error(error);
@@ -152,6 +176,7 @@ exports.getReviews = async (req, res, next) => {
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -190,6 +215,7 @@ exports.getReviewById = async (req, res, next) => {
         .status(respCode.OK)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.OK,
             'Retrieve Data by ID Successfully',
             null,
@@ -200,13 +226,16 @@ exports.getReviewById = async (req, res, next) => {
 
     return res
       .status(respCode.NOT_FOUND)
-      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+      .send(
+        respMsg(req.baseUrl, respCode.NOT_FOUND, 'ID Not Found', null, null)
+      );
   } catch (error) {
     console.error(error);
     return res
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -224,6 +253,7 @@ exports.updateReviewById = async (req, res, next) => {
         .status(respCode.BAD_REQUEST)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.BAD_REQUEST,
             'Body is Required, Cannot be Empty',
             null,
@@ -243,6 +273,7 @@ exports.updateReviewById = async (req, res, next) => {
           .status(respCode.BAD_REQUEST)
           .send(
             respMsg(
+              req.baseUrl,
               respCode.BAD_REQUEST,
               'Update Failed, Please Ensure Payload Valid',
               null,
@@ -269,7 +300,13 @@ exports.updateReviewById = async (req, res, next) => {
           return res
             .status(respCode.NOT_FOUND)
             .send(
-              respMsg(respCode.NOT_FOUND, 'Product ID Not Found', null, null)
+              respMsg(
+                req.baseUrl,
+                respCode.NOT_FOUND,
+                'Product ID Not Found',
+                null,
+                null
+              )
             );
         }
       }
@@ -279,6 +316,7 @@ exports.updateReviewById = async (req, res, next) => {
           .status(respCode.BAD_REQUEST)
           .send(
             respMsg(
+              req.baseUrl,
               respCode.BAD_REQUEST,
               'Minimum Review Stars is 1, Maximum Review Stars is 5',
               null,
@@ -327,6 +365,7 @@ exports.updateReviewById = async (req, res, next) => {
         .status(respCode.OK)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.OK,
             'Update data by ID successfully',
             null,
@@ -336,13 +375,16 @@ exports.updateReviewById = async (req, res, next) => {
     }
     return res
       .status(respCode.NOT_FOUND)
-      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+      .send(
+        respMsg(req.baseUrl, respCode.NOT_FOUND, 'ID Not Found', null, null)
+      );
   } catch (error) {
     console.error(error);
     return res
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -365,18 +407,27 @@ exports.deleteReviewById = async (req, res, next) => {
       return res
         .status(respCode.OK)
         .send(
-          respMsg(respCode.OK, 'Delete data by ID successfully', null, null)
+          respMsg(
+            req.baseUrl,
+            respCode.OK,
+            'Delete data by ID successfully',
+            null,
+            null
+          )
         );
     }
     return res
       .status(respCode.NOT_FOUND)
-      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+      .send(
+        respMsg(req.baseUrl, respCode.NOT_FOUND, 'ID Not Found', null, null)
+      );
   } catch (error) {
     console.error(error);
     return res
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
