@@ -14,6 +14,7 @@ exports.addOrder = async (req, res, next) => {
         .status(respCode.BAD_REQUEST)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.BAD_REQUEST,
             'Body is Required, Cannot be Empty',
             null,
@@ -39,6 +40,7 @@ exports.addOrder = async (req, res, next) => {
           .status(respCode.BAD_REQUEST)
           .send(
             respMsg(
+              req.baseUrl,
               respCode.BAD_REQUEST,
               'Insert Failed, Please Ensure Payload Valid',
               null,
@@ -58,7 +60,7 @@ exports.addOrder = async (req, res, next) => {
     // if (!checkProductById) {
     //   return res
     //     .status(respCode.NOT_FOUND)
-    //     .send(respMsg(respCode.NOT_FOUND, 'Product ID Not Found', null, null));
+    //     .send(respMsg(req.baseUrl,respCode.NOT_FOUND, 'Product ID Not Found', null, null));
     // }
 
     const rndInt = Math.floor(Math.random() * (9999 - 1 + 1)) + 1;
@@ -145,7 +147,13 @@ exports.addOrder = async (req, res, next) => {
     return res
       .status(respCode.CREATED)
       .send(
-        respMsg(respCode.CREATED, 'New Order Created', null, getInsertedOrder)
+        respMsg(
+          req.baseUrl,
+          respCode.CREATED,
+          'New Order Created',
+          null,
+          getInsertedOrder
+        )
       );
   } catch (error) {
     console.error(error);
@@ -156,6 +164,7 @@ exports.addOrder = async (req, res, next) => {
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -202,7 +211,13 @@ exports.getOrders = async (req, res, next) => {
     return res
       .status(respCode.OK)
       .send(
-        respMsg(respCode.OK, 'Retrieve All Data Successfully', null, getAllData)
+        respMsg(
+          req.baseUrl,
+          respCode.OK,
+          'Retrieve All Data Successfully',
+          null,
+          getAllData
+        )
       );
   } catch (error) {
     console.error(error);
@@ -210,6 +225,7 @@ exports.getOrders = async (req, res, next) => {
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -264,6 +280,7 @@ exports.getOrderByIdOrCode = async (req, res, next) => {
         .status(respCode.OK)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.OK,
             'Retrieve Data by ID Successfully',
             null,
@@ -274,13 +291,16 @@ exports.getOrderByIdOrCode = async (req, res, next) => {
 
     return res
       .status(respCode.NOT_FOUND)
-      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+      .send(
+        respMsg(req.baseUrl, respCode.NOT_FOUND, 'ID Not Found', null, null)
+      );
   } catch (error) {
     console.error(error);
     return res
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
@@ -298,8 +318,23 @@ exports.updateOrderStatusByIdOrCode = async (req, res, next) => {
         .status(respCode.BAD_REQUEST)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.BAD_REQUEST,
             'Body is Required, Cannot be Empty',
+            null,
+            null
+          )
+        );
+    }
+
+    if (payload.orderStatus == null) {
+      return res
+        .status(respCode.BAD_REQUEST)
+        .send(
+          respMsg(
+            req.baseUrl,
+            respCode.BAD_REQUEST,
+            'Update Failed, Please Ensure Payload Valid',
             null,
             null
           )
@@ -372,6 +407,7 @@ exports.updateOrderStatusByIdOrCode = async (req, res, next) => {
         .status(respCode.OK)
         .send(
           respMsg(
+            req.baseUrl,
             respCode.OK,
             'Update data by ID or Code successfully',
             null,
@@ -381,13 +417,16 @@ exports.updateOrderStatusByIdOrCode = async (req, res, next) => {
     }
     return res
       .status(respCode.NOT_FOUND)
-      .send(respMsg(respCode.NOT_FOUND, 'ID Not Found', null, null));
+      .send(
+        respMsg(req.baseUrl, respCode.NOT_FOUND, 'ID Not Found', null, null)
+      );
   } catch (error) {
     console.error(error);
     return res
       .status(respCode.SERVER_ERROR)
       .send(
         respMsg(
+          req.baseUrl,
           respCode.SERVER_ERROR,
           'Oops, Something Wrong Happened',
           error,
