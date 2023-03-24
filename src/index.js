@@ -3,10 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const { sequelize } = require('./models');
 
-// const router = require('./routes/router');
 const categoriesRouter = require('./routes/categoriesRouter');
 const productsRouter = require('./routes/productsRouter');
-// const productImgRouter = require('./routes/productImgRouter');
 const reviewsRouter = require('./routes/reviewsRouter');
 const ordersRouter = require('./routes/ordersRouter');
 
@@ -26,10 +24,8 @@ sequelize
     console.log('Unable to connect to the database: ', err);
   });
 
-// app.use('/', router);
 app.use('/categories', categoriesRouter);
 app.use('/products', productsRouter);
-// app.use('/product-images', productImgRouter);
 app.use('/reviews', reviewsRouter);
 app.use('/orders', ordersRouter);
 
