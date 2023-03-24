@@ -13,6 +13,10 @@ module.exports = {
         allowNull: true,
         type: Sequelize.TEXT,
       },
+      image_filename: {
+        allowNull: true,
+        type: Sequelize.TEXT,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

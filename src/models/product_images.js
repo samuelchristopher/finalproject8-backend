@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   product_images.init(
     {
       image_path: DataTypes.TEXT,
+      image_filename: DataTypes.TEXT,
     },
     {
       sequelize,

@@ -1,7 +1,41 @@
 const { Op } = require('sequelize');
-const { products, categories } = require('../models');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require('multer');
+const { products, categories, product_images } = require('../models');
 const respMsg = require('../helpers/respMsg');
 const respCode = require('../helpers/respCode');
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'DEV',
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    // fileSize: 500,
+    // files: 3,
+  },
+  storage,
+  fileFilter,
+});
+
+exports.uploadImg = upload.array('image');
 
 exports.addProduct = async (req, res, next) => {
   try {
@@ -28,6 +62,12 @@ exports.addProduct = async (req, res, next) => {
       case payload.productDesc == null:
       case payload.productPrice == null:
       case payload.productStock == null:
+      case req.files == null:
+        req.files.forEach((images) => {
+          cloudinary.uploader.destroy(images.filename, (result) => {
+            console.log(result);
+          });
+        });
         return res
           .status(respCode.BAD_REQUEST)
           .send(
@@ -50,6 +90,11 @@ exports.addProduct = async (req, res, next) => {
     // console.log(checkCategoryById);
 
     if (!checkCategoryById) {
+      req.files.forEach((images) => {
+        cloudinary.uploader.destroy(images.filename, (result) => {
+          console.log(result);
+        });
+      });
       return res
         .status(respCode.NOT_FOUND)
         .send(
@@ -71,6 +116,11 @@ exports.addProduct = async (req, res, next) => {
     // console.log(checkProducts);
 
     if (checkProducts.rows != 0) {
+      req.files.forEach((images) => {
+        cloudinary.uploader.destroy(images.filename, (result) => {
+          console.log(result);
+        });
+      });
       return res
         .status(respCode.CONFLICT)
         .send(
@@ -95,6 +145,22 @@ exports.addProduct = async (req, res, next) => {
     // console.log('insertProduct: ' + JSON.stringify(insertProduct));
     // console.log('id: ' + insertProduct.id);
 
+    if (req.files) {
+      const dataProductImages = [];
+
+      req.files.forEach((images) => {
+        const data = {
+          product_id: insertProduct.id,
+          image_path: images.path,
+          image_filename: images.filename,
+        };
+
+        dataProductImages.push(data);
+      });
+
+      await product_images.bulkCreate(dataProductImages);
+    }
+
     const getInsertedProduct = await products.findOne({
       attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
       include: {
@@ -118,6 +184,11 @@ exports.addProduct = async (req, res, next) => {
       );
   } catch (error) {
     console.error(error);
+    req.files.forEach((images) => {
+      cloudinary.uploader.destroy(images.filename, (result) => {
+        console.log(result);
+      });
+    });
     return res
       .status(respCode.SERVER_ERROR)
       .send(
@@ -141,6 +212,7 @@ exports.getProducts = async (req, res, next) => {
         required: true,
         attributes: ['id', 'name'],
       },
+      order: [['id', 'ASC']],
     });
 
     return res
@@ -367,8 +439,21 @@ exports.deleteProductById = async (req, res, next) => {
     const checkProductById = await products.findOne({
       where: { id: req.params.id },
     });
+    const checkProductImagesByProductId = await product_images.findAll({
+      where: { product_id: req.params.id },
+    });
     // console.log(checkProductById);
     if (checkProductById !== null) {
+      checkProductImagesByProductId.forEach((images) => {
+        cloudinary.uploader.destroy(images.image_filename, (result) => {
+          console.log(result);
+        });
+      });
+
+      await product_images.destroy({
+        where: { product_id: req.params.id },
+      });
+
       await products.destroy({
         where: { id: req.params.id },
       });
