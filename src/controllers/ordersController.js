@@ -106,6 +106,31 @@ exports.addOrder = async (req, res, next) => {
 
     await order_details.bulkCreate(dataOrderDetails, { transaction });
 
+    for (const details of dataOrderDetails) {
+      const checkProductById = await products.findOne({
+        where: { id: details.product_id },
+      });
+      if (checkProductById.stock <= 0) {
+        transaction.rollback();
+        return res
+          .status(respCode.BAD_REQUEST)
+          .send(
+            respMsg(
+              req.baseUrl,
+              respCode.BAD_REQUEST,
+              'Insert Failed, Out Of Stock',
+              null,
+              null
+            )
+          );
+      }
+      products.decrement(
+        { stock: details.qty },
+        { where: { id: details.product_id } },
+        { transaction }
+      );
+    }
+
     await transaction.commit();
 
     // console.log('insertReview: ' + JSON.stringify(insertReview));
@@ -351,6 +376,30 @@ exports.updateOrderStatusByIdOrCode = async (req, res, next) => {
     });
 
     if (checkOrderByIdOrCode !== null) {
+      if (
+        checkOrderByIdOrCode.status !== 'CANCELLED' &&
+        payload.orderStatus === 'CANCELLED'
+      ) {
+        const getOrderByIdOrCode = await orders.findOne({
+          where: {
+            [Op.or]: [
+              { id: req.params.idOrCode },
+              { order_code: req.params.idOrCode },
+            ],
+          },
+        });
+
+        const getOrderDetailsById = await order_details.findAll({
+          where: { order_id: getOrderByIdOrCode.id },
+        });
+
+        for (const details of getOrderDetailsById) {
+          products.increment(
+            { stock: details.qty },
+            { where: { id: details.product_id } }
+          );
+        }
+      }
       await orders.update(
         {
           status: payload.orderStatus,
