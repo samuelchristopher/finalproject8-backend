@@ -163,11 +163,18 @@ exports.addProduct = async (req, res, next) => {
 
     const getInsertedProduct = await products.findOne({
       attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
-      include: {
-        model: categories,
-        required: true,
-        attributes: ['id', 'name'],
-      },
+      include: [
+        {
+          model: categories,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+        {
+          model: product_images,
+          // required: true,
+          attributes: ['id', 'image_path'],
+        },
+      ],
       where: { id: insertProduct.id },
     });
 
@@ -207,11 +214,18 @@ exports.getProducts = async (req, res, next) => {
   try {
     const getAllData = await products.findAll({
       attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
-      include: {
-        model: categories,
-        required: true,
-        attributes: ['id', 'name'],
-      },
+      include: [
+        {
+          model: categories,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+        {
+          model: product_images,
+          // required: true,
+          attributes: ['id', 'image_path'],
+        },
+      ],
       order: [['id', 'ASC']],
     });
 
@@ -246,11 +260,18 @@ exports.getProductById = async (req, res, next) => {
   try {
     const data = await products.findOne({
       attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
-      include: {
-        model: categories,
-        required: true,
-        attributes: ['id', 'name'],
-      },
+      include: [
+        {
+          model: categories,
+          required: true,
+          attributes: ['id', 'name'],
+        },
+        {
+          model: product_images,
+          // required: true,
+          attributes: ['id', 'image_path'],
+        },
+      ],
       where: { id: req.params.id },
     });
     // console.log(typeof data);
@@ -393,11 +414,18 @@ exports.updateProductById = async (req, res, next) => {
 
       const updateResp = await products.findOne({
         attributes: ['id', 'sku', 'name', 'desc', 'price', 'stock'],
-        include: {
-          model: categories,
-          required: true,
-          attributes: ['id', 'name'],
-        },
+        include: [
+          {
+            model: categories,
+            required: true,
+            attributes: ['id', 'name'],
+          },
+          {
+            model: product_images,
+            // required: true,
+            attributes: ['id', 'image_path'],
+          },
+        ],
         where: { id: req.params.id },
       });
 
