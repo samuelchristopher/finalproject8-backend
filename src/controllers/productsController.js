@@ -212,6 +212,7 @@ exports.getProducts = async (req, res, next) => {
         required: true,
         attributes: ['id', 'name'],
       },
+      order: [['id', 'ASC']],
     });
 
     return res
