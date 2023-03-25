@@ -61,27 +61,35 @@
 
 ## Catatan
 
-1. Membutuhkan file `.env` dengan isi  
-    ` 	SERVER_PORT=[expressjs port]<br>
-MYSQL_HOST=[mysql host]<br>
-MYSQL_PORT=3306 <br>
-MYSQL_DATABASE=[mysql database name] <br>
-MYSQL_USERNAME=[mysql username] <br>
-MYSQL_PASSWORD=[mysql password] <br>
-CLOUDINARY_CLOUD_NAME=[cloudinary cloud name] <br>  
-CLOUDINARY_API_KEY=[cloudinary api key] <br>
-CLOUDINARY_API_SECRET=[cloudinary api secret] <br>  
-CLOUDINARY_URL=[cloudinary url] <br>
-JWT_KEY=[jwt key] <br>`
+1. Membutuhkan file `.env` dengan isi
+
+   ```
+     SERVER_PORT=[expressjs port]
+     MYSQL_HOST=[mysql host]
+     MYSQL_PORT=3306
+     MYSQL_DATABASE=[mysql database name]
+     MYSQL_USERNAME=[mysql username]
+     MYSQL_PASSWORD=[mysql password]
+     CLOUDINARY_CLOUD_NAME=[cloudinary cloud name]
+     CLOUDINARY_API_KEY=[cloudinary api key]
+     CLOUDINARY_API_SECRET=[cloudinary api secret]
+     CLOUDINARY_URL=[cloudinary url]
+     JWT_KEY=[jwt key]
+
+   ```
 
 2. Contoh Request Payload
-   - `POST, PUT /categories`  
+   - `POST, PUT /categories`
      ![alt](readme_assets/01-categories.png)
-   - `POST, PUT /products`  
+   - `POST, PUT /products`
      ![alt](readme_assets/02-products.png)
-   - `POST, PUT /reviews`  
+   - `POST, PUT /reviews`
      ![alt](readme_assets/03-reviews.png)
-   - `POST /orders`  
+   - `POST /orders`
      ![alt](readme_assets/04-post-orders.png)
-   - `PUT /orders`  
+   - `PUT /orders`
      ![alt](readme_assets/05-put-orders.png)
+
+```
+
+```
