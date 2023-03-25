@@ -124,6 +124,20 @@ exports.addOrder = async (req, res, next) => {
             )
           );
       }
+      if (details.qty > checkProductById.stock) {
+        transaction.rollback();
+        return res
+          .status(respCode.BAD_REQUEST)
+          .send(
+            respMsg(
+              req.baseUrl,
+              respCode.BAD_REQUEST,
+              'Insert Failed, Order Qty cannot Larger than Stock',
+              null,
+              null
+            )
+          );
+      }
       products.decrement(
         { stock: details.qty },
         { where: { id: details.product_id } },
