@@ -62,17 +62,17 @@
 ## Catatan
 
 1. Membutuhkan file `.env` dengan isi  
-    `  	SERVER_PORT=[expressjs port]  
-MYSQL_HOST=[mysql host]  
-MYSQL_PORT=3306  
-MYSQL_DATABASE=[mysql database name]  
-MYSQL_USERNAME=[mysql username]  
-MYSQL_PASSWORD=[mysql password]  
-CLOUDINARY_CLOUD_NAME=[cloudinary cloud name]  
-CLOUDINARY_API_KEY=[cloudinary api key]  
-CLOUDINARY_API_SECRET=[cloudinary api secret]  
-CLOUDINARY_URL=[cloudinary url]  
-JWT_KEY=[jwt key]`
+    ` 	SERVER_PORT=[expressjs port]```
+MYSQL_HOST=[mysql host]```
+MYSQL_PORT=3306 ```
+MYSQL_DATABASE=[mysql database name] ```
+MYSQL_USERNAME=[mysql username] ```
+MYSQL_PASSWORD=[mysql password] ```
+CLOUDINARY_CLOUD_NAME=[cloudinary cloud name] ```  
+CLOUDINARY_API_KEY=[cloudinary api key] ```
+CLOUDINARY_API_SECRET=[cloudinary api secret] ```  
+CLOUDINARY_URL=[cloudinary url] ```
+JWT_KEY=[jwt key] ````
 
 2. Contoh Request Payload
    - `POST, PUT /categories`  
