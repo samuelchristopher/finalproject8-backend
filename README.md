@@ -6,7 +6,7 @@
 2. ORM Framework: Sequelize
 3. Database: MySQL
 4. Cloud Image Repository: Cloudinary
-5. JavaScript Server: AWS
+5. JavaScript Server: AWS (Initial Server), Cyclic
 6. MySQL Server: FreeSQLDatabase
 7. Package:
 
